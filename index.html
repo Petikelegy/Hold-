@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hold- és Ciklus Kalkulátor</title>
+    <style>
+        body {
+            background-color: #121218;
+            color: #e0e0e0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: #1e1e28;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid #3a3a4f;
+        }
+        h2 {
+            text-align: center;
+            color: #b19cd9;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #b0b0c0;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            box-sizing: border-box;
+            background-color: #2a2a38;
+            border: 1px solid #4a4a60;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 16px;
+        }
+        input:focus {
+            outline: none;
+            border-color: #b19cd9;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #6a1b9a, #4a148c);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: opacity 0.2s;
+        }
+        button:active {
+            opacity: 0.8;
+        }
+        .results {
+            margin-top: 20px;
+            background-color: #15151c;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #b19cd9;
+            white-space: pre-line;
+            font-size: 14px;
+            line-height: 1.5;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🌙 Hold- és Sorsciklus</h2>
+    
+    <div class="form-group">
+        <label for="birthYear">Születési év:</label>
+        <input type="number" id="birthYear" placeholder="pl. 1983" value="1983">
+    </div>
+    
+    <div class="form-group">
+        <label for="birthMonth">Születési hónap (1-12):</label>
+        <input type="number" id="birthMonth" placeholder="pl. 10" value="10">
+    </div>
+    
+    <div class="form-group">
+        <label for="birthDay">Születési nap (1-31):</label>
+        <input type="number" id="birthDay" placeholder="pl. 15" value="15">
+    </div>
+    
+    <button onclick="calculateCycles()">Ciklusok kiszámítása</button>
+    
+    <div id="resultsBox" class="results"></div>
+</div>
+
+<script>
+    function calculateCycles() {
+        const year = parseInt(document.getElementById('birthYear').value);
+        const month = parseInt(document.getElementById('birthMonth').value);
+        const day = parseInt(document.getElementById('birthDay').value);
+        
+        if (isNaN(year) || isNaN(month) || isNaN(day)) {
+            alert("Kérlek, töltsd ki az összes mezőt érvényes számokkal!");
+            return;
+        }
+
+        const birthDate = new Date(year, month - 1, day);
+        const today = new Date();
+        
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const m = today.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+
+        let output = `📌 Születési idő: ${year}. ${String(month).padStart(2, '0')}. ${String(day).padStart(2, '0')}\n`;
+        output += `👤 Jelenlegi életkor: ${age} év\n\n`;
+        output += `🔮 Főbb hold- és sorsciklusok:\n\n`;
+
+        const cycles = [
+            { age: 7, desc: "Első holdfázisváltás / szemléletmód alakulása" },
+            { age: 14, desc: "Második negyed / belső önállósodás" },
+            { age: 19, desc: "Holdcsomópont-forduló / sorsfordító választások" },
+            { age: 28, desc: "Első teljes Hold-ciklus vége / Nagy mérföldkő" },
+            { age: 37, desc: "Középkor kezdeti holdfázis / belső átalakulás" },
+            { age: 42, desc: "Uránusz-szembenállás / életközepi fordulópont" },
+            { age: 52, desc: "Második teljes Hold-ciklus vége / új ciklus" }
+        ];
+
+        cycles.forEach(c => {
+            const targetYear = year + c.age;
+            let status = "";
+            if (targetYear < today.getFullYear()) {
+                status = " (Már elmúlt)";
+            } else if (targetYear === today.getFullYear()) {
+                status = " ⭐ (Aktuális év!)";
+            } else {
+                status = " (Jövőbeli)";
+            }
+            output += `• ${targetYear} (${c.age}. év): ${c.desc}${status}\n`;
+        });
+
+        const box = document.getElementById('resultsBox');
+        box.style.display = "block";
+        box.textContent = output;
+    }
+</script>
+
+</body>
+</html>
